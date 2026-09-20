@@ -19,6 +19,7 @@ namespace JobApplication.Application.Features.JobCandidateApplications.Queries.G
 
         public async Task<JobCandidateApplication?> Handle(GetJobCandidateApplicationByIdQuery request, CancellationToken cancellationToken)
         {
+            var x = 5; 
             var application = await _jobApplicationRepository.Get().FirstOrDefaultAsync(a => a.Id == request.Id);
             return application;
         }
