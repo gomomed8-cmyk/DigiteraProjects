@@ -1,4 +1,4 @@
-﻿using JobApplication.Domain.Enums;
+using JobApplication.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,7 +21,7 @@ namespace JobApplication.Domain.Entities
 
         public JobCandidateApplication()
         {
-            JobApplicationStatus = JobApplicationStatus.Applied;
+            JobApplicationStatus = JobApplicationStatus.Rejected; 
             AppliedAt = DateTime.UtcNow;
         }
 
