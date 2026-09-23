@@ -1,12 +1,14 @@
 
-using System.Reflection;
+using Hangfire;
 using JobApplication.Application.Interfaces;
 using JobApplication.Application.Services;
 using JobApplication.Infrastructure.Persistence;
 using JobApplication.Infrastructure.Repositories;
+using JobApplication.Infrastructure.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using System.Reflection;
 namespace JobApplication.API
 {
     public class Program
@@ -28,6 +30,8 @@ namespace JobApplication.API
 
             builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddScoped<IJobCandidateApplicationService, JobCandidateApplicationService>();
+            builder.Services.AddScoped<IBackgroundJobScheduler, HangfireBackgroundJobScheduler>();
+            builder.Services.AddScoped<INotificationService, EmailNotificationService>();
             builder.Services.AddScoped(typeof(IRepository<>) , typeof(Repository<>));
 
             builder.Services.AddMediatR(cfg =>
@@ -50,6 +54,13 @@ namespace JobApplication.API
                     options.IncludeXmlComments(xmlPath);
                 }
             });
+            builder.Services.AddHangfire(config => config
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(
+                builder.Configuration.GetConnectionString("HangfireConnection")));
+
+            builder.Services.AddHangfireServer(); 
 
             var app = builder.Build();
 
@@ -67,6 +78,7 @@ namespace JobApplication.API
 
             app.UseAuthorization();
 
+            app.UseHangfireDashboard("/hangfire");
 
             app.MapControllers();
 

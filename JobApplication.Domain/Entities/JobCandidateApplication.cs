@@ -21,7 +21,7 @@ namespace JobApplication.Domain.Entities
 
         public JobCandidateApplication()
         {
-            JobApplicationStatus = JobApplicationStatus.Rejected; 
+            JobApplicationStatus = JobApplicationStatus.Applied; 
             AppliedAt = DateTime.UtcNow;
         }
 
