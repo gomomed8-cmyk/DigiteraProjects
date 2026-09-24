@@ -23,7 +23,9 @@ namespace JobApplication.Application.Features.Jobs.Commands.CreateJob
             {
                 Title = request.Title,
                 Description = request.Description,
-                IsActive = true
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+
             };
             await _jobRepository.AddAsync(job);
             await _jobRepository.SaveChangesAsync();

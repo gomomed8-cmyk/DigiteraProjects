@@ -29,6 +29,7 @@ namespace JobApplication.API
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<IJobService, JobService>();
+            builder.Services.AddScoped<JobMaintenanceService>();
             builder.Services.AddScoped<IJobCandidateApplicationService, JobCandidateApplicationService>();
             builder.Services.AddScoped<IBackgroundJobScheduler, HangfireBackgroundJobScheduler>();
             builder.Services.AddScoped<INotificationService, EmailNotificationService>();
@@ -63,6 +64,16 @@ namespace JobApplication.API
             builder.Services.AddHangfireServer(); 
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var scheduler = scope.ServiceProvider
+                    .GetRequiredService<IBackgroundJobScheduler>();
+
+                scheduler.Recurring<JobMaintenanceService>(
+                    "close-inactive-jobs",
+                    service => service.CloseInactiveJobs(),
+                    Cron.Daily);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

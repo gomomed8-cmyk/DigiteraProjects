@@ -22,7 +22,9 @@ namespace JobApplication.Application.Services
             {
                 Title = createJobDto.Title,
                 Description = createJobDto.Description,
-                IsActive = true
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+
             };
             await _jobRepository.AddAsync(job);
             await _jobRepository.SaveChangesAsync();

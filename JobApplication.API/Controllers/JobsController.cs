@@ -74,5 +74,21 @@ namespace JobApplication.API.Controllers
                 id = id
             });
         }
+        [Authorize]
+        [HttpPut("{id}/close")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Close(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            await _mediator.Send(
+                new CloseJobCommand(id),
+                cancellationToken);
+
+            return NoContent();
+        }
     }
 }
